@@ -39,7 +39,6 @@ GraphicsEngine::GraphicsEngine()
 			
 		}
 	}
-	
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -133,4 +132,10 @@ void GraphicsEngine::AddSprite(Sprite* spr)
 void GraphicsEngine::RemoveSprite(Sprite* spr)
 {
 	spriteList.erase(std::remove(spriteList.begin(), spriteList.end(), spr), spriteList.end());
+}
+
+GraphicsEngine &GraphicsEngine::GetInstance()
+{
+	static GraphicsEngine ge;
+	return ge;
 }

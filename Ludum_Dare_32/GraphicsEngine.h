@@ -1,5 +1,5 @@
 //Graphics engine for the game
-#pragama once
+#pragma once
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
@@ -11,6 +11,7 @@
 class GraphicsEngine
 {
 public:
+	static GraphicsEngine& GetInstance();
 	GraphicsEngine();
 	~GraphicsEngine();
 
@@ -23,6 +24,10 @@ public:
 	void AddSprite(Sprite* spr);
 	void RemoveSprite(Sprite* spr);
 	SDL_Texture* LoadTexture(std::string path);
+
+	//Dont want these as singleton
+	GraphicsEngine(GraphicsEngine const&) = delete;
+	void operator=(GraphicsEngine const&) = delete;
 
 	void Draw();
 private:
