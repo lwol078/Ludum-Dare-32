@@ -1,12 +1,13 @@
 //Graphics engine for the game
+#pragama once
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
 #include <map>
 #include <queue>
 #include <vector>
+#include "Sprite.h"
 
-class Sprite;
 class GraphicsEngine
 {
 public:
@@ -21,7 +22,7 @@ public:
 
 	void AddSprite(Sprite* spr);
 	void RemoveSprite(Sprite* spr);
-	SDL_Surface* LoadSurface(std::string path);
+	SDL_Texture* LoadTexture(std::string path);
 
 	void Draw();
 private:
@@ -31,15 +32,15 @@ private:
 	//The surface contained by the window
 	SDL_Surface* gScreenSurface = NULL;
 
+	//The renderer
+	SDL_Renderer* gRenderer = NULL;
+
 	//Map of textures to draw
-	std::map<std::string, SDL_Surface*> surfaceMap;
+	std::map<std::string, SDL_Texture*> texMap;
 
 	//Queue of sprites to draw
-	std::priority_queue<Sprite*> spriteQueue;
+	std::priority_queue<Sprite*, std::vector<Sprite*>, LessThanByDepth> spriteQueue;
 
 	//List of sprites
 	std::vector<Sprite*> spriteList;
-
-	//Current displayed PNG image
-	SDL_Surface* gPNGSurface = NULL;
 };

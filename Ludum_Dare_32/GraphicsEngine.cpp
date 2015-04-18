@@ -18,6 +18,10 @@ GraphicsEngine::GraphicsEngine()
 		}
 		else
 		{
+			if (gRenderer == NULL)
+				printf("Renderer could not be created");
+			SDL_SetRenderDrawColor(gRenderer, 0x0, 0x0, 0x0, 0xFF);
+
 			//Initialize PNG loading
 			int imgFlags = IMG_INIT_PNG;
 			if (!(IMG_Init(imgFlags) & imgFlags))
@@ -29,19 +33,30 @@ GraphicsEngine::GraphicsEngine()
 				//Get window surface
 				gScreenSurface = SDL_GetWindowSurface(gWindow);
 			}
+			//Create Renderer
+			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+			
+			
 		}
 	}
+	
 }
 
 GraphicsEngine::~GraphicsEngine()
 {
-	//Free loaded image
-	SDL_FreeSurface(gPNGSurface);
-	gPNGSurface = NULL;
-
+	//Free loaded surfaces
+	for (std::map<std::string, SDL_Texture*>::iterator it = texMap.begin(); it != texMap.end(); ++it)
+	{
+		SDL_DestroyTexture(it->second);
+		it->second = NULL;
+	}
 	//Destroy window
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
+
+	//Destroy Renderer
+	SDL_DestroyRenderer(gRenderer);
+	gRenderer = NULL;
 
 	//Quit SDL subsystems
 	IMG_Quit();
@@ -50,6 +65,10 @@ GraphicsEngine::~GraphicsEngine()
 
 void GraphicsEngine::Draw()
 {
+	//Clear Screen
+	SDL_SetRenderDrawColor(gRenderer, 0, 100, 100, 0xFF);
+	SDL_RenderClear(gRenderer);
+
 	for (std::vector<Sprite*>::iterator it = spriteList.begin(); it != spriteList.end(); ++it)
 		spriteQueue.push(*it);
 
@@ -57,24 +76,24 @@ void GraphicsEngine::Draw()
 	{
 		Sprite* spr = spriteQueue.top();
 		spriteQueue.pop();
-		//Apply the PNG image
-		SDL_BlitSurface(spr->GetSurface(), NULL, gScreenSurface, NULL);
+		//Render texture to screen
+		SDL_RenderCopy(gRenderer, spr->GetTexture(), &spr->GetBounds(), &spr->GetPosition());
 	}
 
-	//Update the surface
-	SDL_UpdateWindowSurface(gWindow);
+	//Update screen
+	SDL_RenderPresent(gRenderer);
 }
 
-SDL_Surface* GraphicsEngine::LoadSurface(std::string path)
+SDL_Texture* GraphicsEngine::LoadTexture(std::string path)
 {
 	//If already in map return surface
-	if (surfaceMap.find(path) != surfaceMap.end())
-		return surfaceMap.find(path)->second;
+	if (texMap.find(path) != texMap.end())
+		return texMap.find(path)->second;
 
 	//Otherwise load surface
 
 	//The final optimized image
-	SDL_Surface* optimizedSurface = NULL;
+	SDL_Texture* newTexture = NULL;
 
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
@@ -84,35 +103,24 @@ SDL_Surface* GraphicsEngine::LoadSurface(std::string path)
 	}
 	else
 	{
-		//Convert surface to screen format
-		optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface->format, NULL);
-		if (optimizedSurface == NULL)
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+		if (newTexture == NULL)
 		{
-			printf("Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
 
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
 
-	surfaceMap.insert(std::pair<std::string,SDL_Surface*>(path, optimizedSurface));
-	return optimizedSurface;
+	texMap.insert(std::pair<std::string,SDL_Texture*>(path, newTexture));
+	return newTexture;
 }
 
 bool GraphicsEngine::LoadMedia()
 {
-	//Loading success flag
-	bool success = true;
-
-	//Load PNG surface
-	gPNGSurface = LoadSurface("loaded.png");
-	if (gPNGSurface == NULL)
-	{
-		printf("Failed to load PNG image!\n");
-		success = false;
-	}
-
-	return success;
+	return true;
 }
 
 void GraphicsEngine::AddSprite(Sprite* spr)

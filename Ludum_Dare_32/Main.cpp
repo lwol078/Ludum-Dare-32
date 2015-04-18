@@ -27,8 +27,25 @@ int main(int argc, char* args[])
 		//Event handler
 		SDL_Event e;
 
+		SDL_Rect r = SDL_Rect();
+
 		Sprite* spr = new Sprite(ge);
-		spr->SetSurface("loaded.png");
+		spr->SetTexture("loaded.png");
+		r.x = 100;
+		r.y = 200;
+		r.w = 200;
+		r.h = 100;
+		spr->SetPosition(r);
+
+		Sprite* spr2 = new Sprite(ge);
+		spr2->SetTexture("loaded2.png");
+		r.x = 200;
+		r.y = 200;
+		r.w = 100;
+		r.h = 100;
+		spr2->SetPosition(r);
+		spr2->depth = 1;
+
 		//While application is running
 		while (!quit)
 		{
