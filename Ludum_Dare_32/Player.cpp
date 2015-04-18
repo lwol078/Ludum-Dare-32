@@ -4,8 +4,9 @@ Player::Player()
 {
 	x = 0;
 	y = 0;
-	xVel = 0;
-	yVel = 0;
+	velocity = 64.0f;
+	xTarget = 0;
+	yTarget = 0;
 	sprite = new Sprite(&GraphicsEngine::GetInstance());
 	sprite->SetTexture("player.png");
 	SDL_Rect r = SDL_Rect();
@@ -17,29 +18,23 @@ Player::Player()
 	sprite->SetPosition(r);
 }
 
-void Player::Step()
+void Player::Step(float timeStep)
 {
-	xVel = 0;
-	yVel = 0;
-	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-	if (currentKeyStates[SDL_SCANCODE_UP])
+	float trueVel = velocity*(timeStep);
+	float xDiff = xTarget - x;
+	float yDiff = yTarget - y;
+	float dist = sqrt(xDiff*xDiff + yDiff*yDiff);
+	if (dist < MIN_DISTANCE)
 	{
-		yVel = -1;
+		Move(xTarget, yTarget);
+		Lock(false);
 	}
-	else if (currentKeyStates[SDL_SCANCODE_DOWN])
+	else
 	{
-		yVel = 1;
+		float xVel = (xDiff / dist)*trueVel;
+		float yVel = (yDiff / dist)*trueVel;
+		Move(x + xVel, y + yVel);
 	}
-	else if (currentKeyStates[SDL_SCANCODE_LEFT])
-	{
-		xVel = -1;
-	}
-	else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-	{
-		xVel = 1;
-	}
-
-	Move(x + xVel, y + yVel);
 }
 
 void Player::Move(float newX, float newY)
@@ -50,4 +45,34 @@ void Player::Move(float newX, float newY)
 	r.x = newX;
 	r.y = newY;
 	sprite->SetPosition(r);
+}
+
+void Player::Lock(bool set)
+{
+	lock = set;
+}
+
+bool Player::HandleEvent(SDL_Event& e)
+{
+	bool consume = false;
+	if (!lock && e.type == SDL_KEYDOWN && e.key.repeat == 0)
+	{
+		//Adjust the target
+		Lock(true);
+		switch (e.key.keysym.sym)
+		{
+		case SDLK_UP: yTarget = y - 64; xTarget = x; break;
+		case SDLK_DOWN: yTarget = y + 64; xTarget = x; break;
+		case SDLK_LEFT: xTarget = x - 64; yTarget = y; break;
+		case SDLK_RIGHT: xTarget = x + 64; yTarget = y; break;
+		default: Lock(false);
+		}
+	}
+	return consume;
+}
+
+void Player::SetTarget(float x, float y)
+{
+	xTarget = x;
+	yTarget = y;
 }

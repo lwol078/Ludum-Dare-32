@@ -3,6 +3,7 @@
 #include "GraphicsEngine.h"
 #include "Sprite.h"
 #include "Player.h"
+#include "Timer.h"
 #include <stdio.h>
 #include <string>
 
@@ -23,7 +24,8 @@ int main(int argc, char* args[])
 	{
 		//Main loop flag
 		bool quit = false;
-
+		Timer stepTimer;
+		stepTimer.start();
 		//Event handler
 		SDL_Event e;
 
@@ -42,9 +44,15 @@ int main(int argc, char* args[])
 				{
 					quit = true;
 				}
+				else
+				{
+					p.HandleEvent(e);
+				}
 			}
 			//Logic
-			p.Step();
+			float timeStep = stepTimer.getTicks() / 1000.f;
+			p.Step(timeStep);
+			stepTimer.start();
 
 			GraphicsEngine::GetInstance().Draw();
 		}
