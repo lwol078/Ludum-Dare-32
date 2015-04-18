@@ -1,9 +1,9 @@
 //Main Game loop of game
-
 #include "GraphicsEngine.h"
 #include "Sprite.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Level.h"
 #include <stdio.h>
 #include <string>
 
@@ -24,6 +24,8 @@ int main(int argc, char* args[])
 	{
 		//Main loop flag
 		bool quit = false;
+		Level l = Level::LoadLevel("Level1.txt");
+		l.GenerateWalls();
 		Timer stepTimer;
 		stepTimer.start();
 		//Event handler
@@ -32,6 +34,7 @@ int main(int argc, char* args[])
 		SDL_Rect r = SDL_Rect();
 
 		Player p = Player();
+		Movable::pLevel = &l;
 
 		//While application is running
 		while (!quit)

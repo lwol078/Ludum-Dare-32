@@ -6,15 +6,15 @@ Sprite::Sprite(GraphicsEngine* pGE)
 	pGE->AddSprite(this);
 	this->pGE = pGE;
 	bounds = SDL_Rect();
-	bounds.x = 20;
-	bounds.y = 30;
-	bounds.h = 100;
-	bounds.w = 200;
+	bounds.x = 0;
+	bounds.y = 0;
+	bounds.h = 0;
+	bounds.w = 0;
 	position = SDL_Rect();
-	position.x = 20;
-	position.y = 30;
-	position.h = 100;
-	position.w = 200;
+	position.x = 0;
+	position.y = 0;
+	position.h = 0;
+	position.w = 0;
 }
 
 Sprite::~Sprite()
