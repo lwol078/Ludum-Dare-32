@@ -12,10 +12,13 @@ public:
 	void Move(float x, float y);
 	virtual void Step(float timeStep);
 	void SetTarget(float x, float y);
-	void Lock(bool set);
-
+	std::pair<float, float> GetTarget();
+	std::pair<float, float> GetPosition();
+	bool MoveFinished();
 protected:
-	float x, y, velocity, xTarget, yTarget;
-	bool lock;
+	float velocity;
+	bool moveFinished;
 	Sprite* sprite;
+private:
+	float x, y, xTarget, yTarget;
 };

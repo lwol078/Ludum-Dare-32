@@ -7,8 +7,8 @@ Player::Player() : Movable()
 	sprite = new Sprite(&GraphicsEngine::GetInstance());
 	sprite->SetTexture("player.png");
 	SDL_Rect r = SDL_Rect();
-	r.x = (int)x;
-	r.y = (int)y;
+	r.x = (int)GetPosition().first;
+	r.y = (int)GetPosition().second;
 	r.w = 64;
 	r.h = 64;
 	sprite->SetBounds(r);
@@ -18,36 +18,38 @@ Player::Player() : Movable()
 bool Player::HandleEvent(SDL_Event& e)
 {
 	bool consume = false;
-	if (!lock && e.type == SDL_KEYDOWN && e.key.repeat == 0)
+	if (moveFinished && e.type == SDL_KEYDOWN && e.key.repeat == 0)
 	{
 		//Adjust the target
-		Lock(true);
+		moveFinished = false;
+		int x = GetPosition().first;
+		int y = GetPosition().second;
+		int xTarget = GetTarget().first;
+		int yTarget = GetTarget().second;
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: yTarget = y - Level::GRID_HEIGHT; xTarget = x; break;
-		case SDLK_DOWN: yTarget = y + Level::GRID_HEIGHT; xTarget = x; break;
-		case SDLK_LEFT: xTarget = x - Level::GRID_WIDTH; yTarget = y; break;
-		case SDLK_RIGHT: xTarget = x + Level::GRID_WIDTH; yTarget = y; break;
-		default: (Lock(false));
+		case SDLK_UP: SetTarget(x, y - Level::GRID_HEIGHT); break;
+		case SDLK_DOWN: SetTarget(x, y + Level::GRID_HEIGHT); break;
+		case SDLK_LEFT: SetTarget(x - Level::GRID_WIDTH, y); break;
+		case SDLK_RIGHT: SetTarget(x + Level::GRID_WIDTH, y); break;
+		default: moveFinished = true;
 		}
-		if (lock && pLevel != NULL)
+		if (!moveFinished && pLevel != NULL)
 		{
+			int xTarget = GetTarget().first;
+			int yTarget = GetTarget().second;
 			int xx = (int)xTarget / Level::GRID_WIDTH;
 			int yy = (int)yTarget / Level::GRID_HEIGHT;
 			if (xx < 0 || xx > pLevel->width || yy < 0 || yy > pLevel->height)
 			{
-				xTarget = x;
-				yTarget = y;
-				Lock(false);
+				SetTarget(x, y);
 			}
 			else
 			{
 				int value = pLevel->GetPosition(xx, yy);
 				if (value != 0)
 				{
-					xTarget = x;
-					yTarget = y;
-					Lock(false);
+					SetTarget(x, y);
 				}
 			}
 		}

@@ -1,12 +1,9 @@
 #pragma once
-#include "Sprite.h"
+#include "Movable.h"
 
-class Enemy
+class Enemy : public Movable
 {
 public:
-	void Move(float x, float y);
-	void SetTarget(float x, float y);
-private:
-	float x, y;
-
+	Enemy();
+	void DoLogic();
 };

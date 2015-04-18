@@ -10,7 +10,7 @@ Movable::Movable()
 	velocity = 0;
 	xTarget = x;
 	yTarget = y;
-	lock = false;
+	moveFinished = true;
 }
 
 void Movable::Step(float timeStep)
@@ -22,7 +22,7 @@ void Movable::Step(float timeStep)
 	if (dist < MIN_DISTANCE)
 	{
 		Move(xTarget, yTarget);
-		Lock(false);
+		moveFinished = true;
 	}
 	else
 	{
@@ -33,10 +33,14 @@ void Movable::Step(float timeStep)
 	sprite->depth = -y;
 }
 
-void Movable::SetTarget(float x, float y)
+void Movable::SetTarget(float xx, float yy)
 {
-	xTarget = x;
-	yTarget = y;
+	xTarget = xx;
+	yTarget = yy;
+	if (xx == x && yy == y)
+		moveFinished = true;
+	else
+		moveFinished = false;
 }
 
 void Movable::Move(float newX, float newY)
@@ -49,7 +53,17 @@ void Movable::Move(float newX, float newY)
 	sprite->SetPosition(r);
 }
 
-void Movable::Lock(bool set)
+std::pair<float, float> Movable::GetPosition()
 {
-	lock = set;
+	return std::pair<float, float>(x, y);
+}
+
+std::pair<float, float> Movable::GetTarget()
+{
+	return std::pair<float, float>(xTarget, yTarget);
+}
+
+bool Movable::MoveFinished()
+{
+	return moveFinished;
 }

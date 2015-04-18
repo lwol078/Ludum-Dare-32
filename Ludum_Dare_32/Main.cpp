@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Level.h"
+#include "CrabEnemy.h"
+#include "Game.h"
 #include <stdio.h>
 #include <string>
 
@@ -24,8 +26,10 @@ int main(int argc, char* args[])
 	{
 		//Main loop flag
 		bool quit = false;
+		Game game;
 		Level l = Level::LoadLevel("Level1.txt");
 		l.GenerateWalls();
+		game.pLevel = &l;
 		Timer stepTimer;
 		stepTimer.start();
 		//Event handler
@@ -33,7 +37,10 @@ int main(int argc, char* args[])
 
 		SDL_Rect r = SDL_Rect();
 
-		Player p = Player();
+		Player p;
+		game.pPlayer = &p;
+		CrabEnemy mrKrabs;
+		game.listEnemy.push_back(&mrKrabs);
 		Movable::pLevel = &l;
 
 		//While application is running
@@ -54,7 +61,9 @@ int main(int argc, char* args[])
 			}
 			//Logic
 			float timeStep = stepTimer.getTicks() / 1000.f;
-			p.Step(timeStep);
+			game.GameLoop(timeStep);
+			//p.Step(timeStep);
+			//mrKrabs.Step(timeStep);
 			stepTimer.start();
 
 			GraphicsEngine::GetInstance().Draw();
