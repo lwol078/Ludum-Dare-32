@@ -8,7 +8,7 @@ class Game
 public:
 	static Game* GetInstance();
 	
-	enum GameState { PlayerMoving, EnemyMoving, PlayerSelecting };
+	enum GameState { PlayerMoving, EnemyMoving, PlayerSelecting, EnemySelecting };
 	Player* pPlayer;
 	Level* pLevel;
 	std::vector<Enemy*> listEnemy;
@@ -23,6 +23,7 @@ private:
 	static Game* game;
 
 	GameState state;
+	void doEnemySelecting(float timeStep);
 	void doEnemyMoving(float timeStep);
 	void doPlayerSelecting(float timeStep);
 	void doPlayerMoving(float timeStep);

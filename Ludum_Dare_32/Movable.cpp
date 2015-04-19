@@ -10,7 +10,7 @@ Movable::Movable()
 	velocity = 0;
 	xTarget = x;
 	yTarget = y;
-	moveFinished = true;
+	moveFinished = false;
 }
 
 void Movable::Step(float timeStep)
@@ -30,7 +30,7 @@ void Movable::Step(float timeStep)
 		float yVel = (yDiff / dist)*trueVel;
 		Move(x + xVel, y + yVel);
 	}
-	sprite->depth = -y;
+	sprite->depth = (int)-y;
 }
 
 void Movable::SetTarget(float xx, float yy)
@@ -48,8 +48,8 @@ void Movable::Move(float newX, float newY)
 	x = newX;
 	y = newY;
 	SDL_Rect r = sprite->GetPosition();
-	r.x = newX;
-	r.y = newY;
+	r.x = (int)newX;
+	r.y = (int)newY;
 	sprite->SetPosition(r);
 }
 

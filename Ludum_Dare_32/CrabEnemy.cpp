@@ -15,8 +15,7 @@ CrabEnemy::CrabEnemy() : Enemy()
 	r.x = (int)GetPosition().first;
 	r.y = (int)GetPosition().second;
 	sprite->SetPosition(r);
-	Move(128, 200);
-	SetTarget(0, 0);
+	Move(64 * 4, 64 * 5);
 }
 
 void CrabEnemy::Step(float timeStep)

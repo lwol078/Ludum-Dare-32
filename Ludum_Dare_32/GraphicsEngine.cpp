@@ -76,8 +76,8 @@ void GraphicsEngine::Draw()
 	if (sprBack != NULL && game->pLevel != NULL)
 	{
 		SDL_Rect rPos = sprBack->GetPosition();
-		float ratioX = Level::GRID_WIDTH / rPos.w;
-		float ratioY = Level::GRID_HEIGHT / rPos.h;
+		int ratioX = Level::GRID_WIDTH / rPos.w;
+		int ratioY = Level::GRID_HEIGHT / rPos.h;
 		for (int row = 0; row < Game::GetInstance()->pLevel->height*ratioY; row++)
 		{
 			for (int col = 0; col < Game::GetInstance()->pLevel->width*ratioX; col++)

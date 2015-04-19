@@ -16,8 +16,8 @@ public:
 	static Level LoadLevel(std::string path);
 	void GenerateWalls();
 	
-	void SetPosition(int row, int col, int value);
-	int GetPosition(int row, int col);
+	void SetPosition(int col, int row, int value);
+	int GetPosition(int col, int row);
 	int width, height;
 private:
 	int grid[MAX_ROOM_WIDTH][MAX_ROOM_HEIGHT];
