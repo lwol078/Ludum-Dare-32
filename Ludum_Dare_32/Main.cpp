@@ -26,23 +26,34 @@ int main(int argc, char* args[])
 	{
 		//Main loop flag
 		bool quit = false;
-		Game game;
+		Game* game = Game::GetInstance();
 		Level l = Level::LoadLevel("Level1.txt");
+		Sprite* back = new Sprite(GraphicsEngine::GetInstance());
+		back->SetTexture("floor_tile.png");
+		SDL_Rect r;
+		r.x = 0;
+		r.y = 0;
+		r.w = 64;
+		r.h = 64;
+		back->SetBounds(r);
+		r.w = 16;
+		r.h = 16;
+		back->SetPosition(r);
+		GraphicsEngine::GetInstance()->SetBackground(back);
 		l.GenerateWalls();
-		game.pLevel = &l;
+		Player p;
+		game->pPlayer = &p;
+		CrabEnemy mrKrabs;
+		game->listEnemy.push_back(&mrKrabs);
+		Movable::pLevel = &l;
+		game->pLevel = &l;
+
 		Timer stepTimer;
 		stepTimer.start();
 		//Event handler
 		SDL_Event e;
 
-		SDL_Rect r = SDL_Rect();
-
-		Player p;
-		game.pPlayer = &p;
-		CrabEnemy mrKrabs;
-		game.listEnemy.push_back(&mrKrabs);
-		Movable::pLevel = &l;
-
+		
 		//While application is running
 		while (!quit)
 		{
@@ -61,12 +72,12 @@ int main(int argc, char* args[])
 			}
 			//Logic
 			float timeStep = stepTimer.getTicks() / 1000.f;
-			game.GameLoop(timeStep);
+			game->GameLoop(timeStep);
 			//p.Step(timeStep);
 			//mrKrabs.Step(timeStep);
 			stepTimer.start();
 
-			GraphicsEngine::GetInstance().Draw();
+			GraphicsEngine::GetInstance()->Draw();
 		}
 	}
 

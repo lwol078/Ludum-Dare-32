@@ -1,6 +1,9 @@
 #include "GraphicsEngine.h"
 #include "Sprite.h"
+#include "Game.h"
 #include <stdio.h>
+
+GraphicsEngine* GraphicsEngine::ge = NULL;
 
 GraphicsEngine::GraphicsEngine()
 {
@@ -39,6 +42,7 @@ GraphicsEngine::GraphicsEngine()
 			
 		}
 	}
+	sprBack = NULL;
 }
 
 GraphicsEngine::~GraphicsEngine()
@@ -67,6 +71,25 @@ void GraphicsEngine::Draw()
 	//Clear Screen
 	SDL_SetRenderDrawColor(gRenderer, 0, 100, 100, 0xFF);
 	SDL_RenderClear(gRenderer);
+
+	Game* game = Game::GetInstance();
+	if (sprBack != NULL && game->pLevel != NULL)
+	{
+		SDL_Rect rPos = sprBack->GetPosition();
+		float ratioX = Level::GRID_WIDTH / rPos.w;
+		float ratioY = Level::GRID_HEIGHT / rPos.h;
+		for (int row = 0; row < Game::GetInstance()->pLevel->height*ratioY; row++)
+		{
+			for (int col = 0; col < Game::GetInstance()->pLevel->width*ratioX; col++)
+			{
+				SDL_Rect r = sprBack->GetPosition();
+				r.x = col*rPos.w;
+				r.y = row*rPos.h;
+				sprBack->SetPosition(r);
+				SDL_RenderCopy(gRenderer, sprBack->GetTexture(), &sprBack->GetBounds(), &sprBack->GetPosition());
+			}
+		}
+	}
 
 	for (std::vector<Sprite*>::iterator it = spriteList.begin(); it != spriteList.end(); ++it)
 		spriteQueue.push(*it);
@@ -134,8 +157,14 @@ void GraphicsEngine::RemoveSprite(Sprite* spr)
 	spriteList.erase(std::remove(spriteList.begin(), spriteList.end(), spr), spriteList.end());
 }
 
-GraphicsEngine &GraphicsEngine::GetInstance()
+GraphicsEngine* GraphicsEngine::GetInstance()
 {
-	static GraphicsEngine ge;
+	if (ge == NULL)
+		ge = new GraphicsEngine();
 	return ge;
+}
+
+void GraphicsEngine::SetBackground(Sprite* spr)
+{
+	sprBack = spr;
 }

@@ -4,7 +4,7 @@
 Player::Player() : Movable()
 {
 	velocity = 64.0f;
-	sprite = new Sprite(&GraphicsEngine::GetInstance());
+	sprite = new Sprite(GraphicsEngine::GetInstance());
 	sprite->SetTexture("player.png");
 	SDL_Rect r = SDL_Rect();
 	r.x = (int)GetPosition().first;
@@ -22,10 +22,10 @@ bool Player::HandleEvent(SDL_Event& e)
 	{
 		//Adjust the target
 		moveFinished = false;
-		int x = GetPosition().first;
-		int y = GetPosition().second;
-		int xTarget = GetTarget().first;
-		int yTarget = GetTarget().second;
+		float x = GetPosition().first;
+		float y = GetPosition().second;
+		float xTarget = GetTarget().first;
+		float yTarget = GetTarget().second;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_UP: SetTarget(x, y - Level::GRID_HEIGHT); break;
@@ -36,8 +36,8 @@ bool Player::HandleEvent(SDL_Event& e)
 		}
 		if (!moveFinished && pLevel != NULL)
 		{
-			int xTarget = GetTarget().first;
-			int yTarget = GetTarget().second;
+			float xTarget = GetTarget().first;
+			float yTarget = GetTarget().second;
 			int xx = (int)xTarget / Level::GRID_WIDTH;
 			int yy = (int)yTarget / Level::GRID_HEIGHT;
 			if (xx < 0 || xx > pLevel->width || yy < 0 || yy > pLevel->height)

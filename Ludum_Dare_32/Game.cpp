@@ -1,5 +1,6 @@
 #include "Game.h"
 
+Game* Game::game = NULL;
 void Game::GameLoop(float timeStep)
 {
 	switch (state)
@@ -44,4 +45,11 @@ Game::Game()
 {
 	pPlayer = NULL;
 	pLevel = NULL;
+}
+
+Game* Game::GetInstance()
+{
+	if (game == NULL)
+		game = new Game();
+	return game;
 }

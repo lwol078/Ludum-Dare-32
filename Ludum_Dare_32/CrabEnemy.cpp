@@ -4,7 +4,7 @@
 CrabEnemy::CrabEnemy() : Enemy()
 {
 	velocity = 64.0f;
-	sprite = new Sprite(&GraphicsEngine::GetInstance());
+	sprite = new Sprite(GraphicsEngine::GetInstance());
 	sprite->SetTexture("player.png");
 	SDL_Rect r = SDL_Rect();
 	r.x = 0;

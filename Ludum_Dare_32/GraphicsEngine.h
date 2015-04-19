@@ -11,8 +11,8 @@
 class GraphicsEngine
 {
 public:
-	static GraphicsEngine& GetInstance();
-	GraphicsEngine();
+	static GraphicsEngine* GetInstance();
+	
 	~GraphicsEngine();
 
 	//Screen Limits
@@ -21,6 +21,7 @@ public:
 
 	bool LoadMedia();
 
+	void SetBackground(Sprite* spr);
 	void AddSprite(Sprite* spr);
 	void RemoveSprite(Sprite* spr);
 	SDL_Texture* LoadTexture(std::string path);
@@ -31,6 +32,8 @@ public:
 
 	void Draw();
 private:
+	GraphicsEngine();
+	static GraphicsEngine* ge;
 	//The window we'll be rendering to
 	SDL_Window* gWindow = NULL;
 
@@ -45,6 +48,7 @@ private:
 
 	//Queue of sprites to draw
 	std::priority_queue<Sprite*, std::vector<Sprite*>, LessThanByDepth> spriteQueue;
+	Sprite* sprBack;
 
 	//List of sprites
 	std::vector<Sprite*> spriteList;

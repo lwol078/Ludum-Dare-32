@@ -66,7 +66,7 @@ void Level::GenerateWalls()
 			int current = grid[col][row];
 			if (current == 1)
 			{
-				Sprite* spr = new Sprite(&GraphicsEngine::GetInstance());
+				Sprite* spr = new Sprite(GraphicsEngine::GetInstance());
 				spr->SetTexture("wall tile.png");
 				SDL_Rect r;
 				r.x = 0;
